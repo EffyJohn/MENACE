@@ -60,10 +60,36 @@ std::bitset<SIZE> reflectVertical(std::bitset<SIZE> board){
     return reflected_board;
 }
 
+// Function that takes a board and returns a board that is reflected about the backslash (/) axis
+// @param: board: input board to reflect 
+std::bitset<SIZE> reflectBackSlash(std::bitset<SIZE> board){
+    // Initialize variables   
+    std::bitset<SIZE> reflected_board(0);
+    std::bitset<SIZE> current(0);
+    std::bitset<SIZE> mask(0);
+   
+    // Encoder[i] = number of places to bitrotate i'th place on board
+    int encoder[SIZE] = {8, 4, 0, 4, 0, 5, 0, 5, 1};
+
+    for(int i = 0; i < SIZE; ++i){
+        // Mask to obtain i'th place on board
+        mask.reset();
+        mask.set(i);
+
+        // Obtain i'th place on board
+        current = board&mask;
+
+        // ! Board representation is 123456789, but bitset uses 987654231
+        current = bitRotateRight(current, encoder[SIZE - i - 1]);
+        reflected_board |= current;
+    }
+    return reflected_board;
+}
+
 // Temporary main function
 int main(){   
     // Sample board
     std::bitset<SIZE> board("011100001");
-    board = reflectVertical(board);
+    board = reflectBackSlash(board);
     return 0;
 }
