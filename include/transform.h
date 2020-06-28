@@ -4,6 +4,8 @@
 #include <bitset>
 #include <functional>
 #include <iostream>
+#include <math.h>
+#include <stdint.h>
 
 // TODO: Move #defines and typdef to appropriate class
 #define SIZE 9          // Size of game board 
@@ -39,13 +41,14 @@ class Transform{
         // Game class would communicate with transform class using these id's
         // TODO: Move to appropriate class
         enum eTransformation {
+            kNoTransformation = -1,
             kRotate90 = 0,
-            kRotate180,
-            kRotate270,
-            kReflectHorizontal,
-            kReflectVertical,
-            kReflectBackSlash,
-            kReflectForwardSlash,
+            kRotate180 = 1,
+            kRotate270 = 2,
+            kReflectHorizontal = 3,
+            kReflectVertical = 4,
+            kReflectBackSlash = 5,
+            kReflectForwardSlash = 6,
         };
 
         // Structure encapsulating the 'packet' that would be sent between game and transform class
@@ -56,7 +59,7 @@ class Transform{
         };
 
         // Main callable function for transform class
-        QueryResult makeMove(BoardType, BoardType);
+        QueryResult makeMove(BoardType noughts, BoardType crosses);
 
 
     private: 
@@ -84,6 +87,8 @@ class Transform{
         BoardType invertReflectVertical(BoardType board);
         BoardType invertReflectBackSlash(BoardType board);
         BoardType invertReflectForwardSlash(BoardType board);
+
+        BoardType getMove(u_int32_t hash, eTransformation transformation);
 
 };
 
