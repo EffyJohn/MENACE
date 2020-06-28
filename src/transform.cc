@@ -151,6 +151,22 @@ BoardType Transform::invertRotate270(BoardType board){
     return rotate90(board);
 }
 
+// Function that takes the hash for the board and retrives move from hash table
+// @param: hash: hash for the hashtable
+BoardType Transform::getMove(u_int32_t hash, eTransformation transformation){
+    // TODO: IMPLEMENT
+    BoardType move(0);
+
+    // no transformation
+    if (transformation == kNoTransformation)
+        return move;
+
+    else{
+        move = (this->*(inverse_transformation_map[transformation]))(move);
+        return move;
+    }
+}
+
 // Function that applies a suitable transformation to the game state to call the hash table
 // Returns a struct containing transformation applied, and the move chosen
 // @param: noughts: game board for noughts
@@ -159,31 +175,49 @@ Transform::QueryResult Transform::makeMove(BoardType noughts, BoardType crosses)
 
     QueryResult query_result = QueryResult();   // return packet
     
-    unsigned long minimum_id = 0;               // minimum id of all resulting boards
-    unsigned long current_id;                   // current id of board
-    BoardType current_board;                    // board for iteration purposes
+    uint32_t minimum_id = -1;               // minimum id of all resulting boards
+    uint32_t current_id = 0;                // current id of board
+    BoardType current_board(0);             // board for iteration purposes
 
-    for(int i = 0; i < TRAN_TOTAL; ++i){
+    // shift 9 bits for creation of ID w/o transformation
+    current_board = noughts;
+    current_id += current_board.to_ulong();
+    current_id *= std::pow(2, SIZE);
+    
+
+    // create ID w/o transformation
+    current_board = crosses;
+    current_id += current_board.to_ulong();
+    
+    if (current_id < minimum_id){
+        minimum_id = current_id;
+        query_result.transformation = (eTransformation)(-1);
+    }
+
+    for (int i = 0; i < TRAN_TOTAL; ++i){
         current_id = 0;
         current_board.reset();
 
         // apply transformation to noughts and shift 9 bits for creation of ID
         current_board = (this->*(transformation_map[i]))(noughts);
         current_id += current_board.to_ulong();
-        current_id << SIZE;
-
+        current_id *= std::pow(2, SIZE);
+    
         // apply transformation to crosses and create ID
         current_board = (this->*(transformation_map[i]))(crosses);
         current_id += current_board.to_ulong();
         
-        if(current_id < minimum_id){
+        if (current_id < minimum_id){
+            minimum_id = current_id;
             query_result.transformation = (eTransformation)i;
         }
-
     }
 
+    // query hash table to get move
+    query_result.move = getMove(minimum_id, query_result.transformation);    
     return query_result;
 }
+
 
 // Temporary main function
 int main(){   
