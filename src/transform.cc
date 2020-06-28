@@ -157,20 +157,22 @@ BoardType Transform::invertRotate270(BoardType board){
 // @param: crosses: game board for crosses
 Transform::QueryResult Transform::makeMove(BoardType noughts, BoardType crosses){
 
-    QueryResult query_result = QueryResult();
+    QueryResult query_result = QueryResult();   // return packet
     
-    unsigned long minimum_id = 0;
-    unsigned long current_id; 
-    BoardType current_board;
+    unsigned long minimum_id = 0;               // minimum id of all resulting boards
+    unsigned long current_id;                   // current id of board
+    BoardType current_board;                    // board for iteration purposes
 
     for(int i = 0; i < TRAN_TOTAL; ++i){
         current_id = 0;
         current_board.reset();
 
+        // apply transformation to noughts and shift 9 bits for creation of ID
         current_board = (this->*(transformation_map[i]))(noughts);
         current_id += current_board.to_ulong();
         current_id << SIZE;
 
+        // apply transformation to crosses and create ID
         current_board = (this->*(transformation_map[i]))(crosses);
         current_id += current_board.to_ulong();
         
@@ -179,7 +181,6 @@ Transform::QueryResult Transform::makeMove(BoardType noughts, BoardType crosses)
         }
 
     }
-
 
     return query_result;
 }
