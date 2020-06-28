@@ -4,15 +4,19 @@
 #include <bitset>
 #include <functional>
 #include <iostream>
-#define SIZE 9 
-#define TRAN_TOTAL 7
 
-typedef std::bitset<SIZE> BoardType;
+// TODO: Move #defines and typdef to appropriate class
+#define SIZE 9          // Size of game board 
+#define TRAN_TOTAL 7    // Total nuber of transformations
 
+typedef std::bitset<SIZE> BoardType;    // Datatype representing board
+
+// Tranform class, handles all interaction between game and hash table
 class Transform{
     public:
         Transform(){
-
+        
+            // Initialise the transformation map w/ transformation function pointers
             transformation_map[kRotate90] = &Transform::rotate90;
             transformation_map[kRotate180] = &Transform::rotate180;
             transformation_map[kRotate270] = &Transform::rotate270;
@@ -21,6 +25,7 @@ class Transform{
             transformation_map[kReflectBackSlash] = &Transform::reflectBackSlash;
             transformation_map[kReflectForwardSlash] = &Transform::reflectForwardSlash;
 
+            // Initialize the inverse transformation map w/ inverse transformation function pointers
             inverse_transformation_map[kRotate90] = &Transform::invertRotate90;
             inverse_transformation_map[kRotate180] = &Transform::invertRotate180;
             inverse_transformation_map[kRotate270] = &Transform::invertRotate270;
@@ -30,6 +35,9 @@ class Transform{
             inverse_transformation_map[kReflectForwardSlash] = &Transform::invertReflectForwardSlash;
         }
 
+        // enum for transformation ID's
+        // Game class would communicate with transform class using these id's
+        // TODO: Move to appropriate class
         enum eTransformation {
             kRotate90 = 0,
             kRotate180,
@@ -40,15 +48,20 @@ class Transform{
             kReflectForwardSlash,
         };
 
+        // Structure encapsulating the 'packet' that would be sent between game and transform class
+        // A board for move chosen, and the transformation ID applied
         struct QueryResult{
             BoardType move;
             eTransformation transformation;
         };
 
+        // Main callable function for transform class
         QueryResult makeMove(BoardType, BoardType);
 
-    private: 
 
+    private: 
+        
+        // Datatype encapsulating a pointer to member function
         typedef BoardType (Transform::*transformation_ptr)( BoardType);
 
         transformation_ptr transformation_map[TRAN_TOTAL];

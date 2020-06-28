@@ -151,9 +151,10 @@ BoardType Transform::invertRotate270(BoardType board){
     return rotate90(board);
 }
 
-// Function that takes the game board and applies a suitable transformation to it to call the hash table
+// Function that applies a suitable transformation to the game state to call the hash table
 // Returns a struct containing transformation applied, and the move chosen
-// @param: board: game board
+// @param: noughts: game board for noughts
+// @param: crosses: game board for crosses
 Transform::QueryResult Transform::makeMove(BoardType noughts, BoardType crosses){
 
     QueryResult query_result = QueryResult();
