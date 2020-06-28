@@ -2,19 +2,41 @@
 #define TRANSFORM_H
 
 #include <bitset>
+#include <functional>
 #include <iostream>
 #define SIZE 9 
 
-std::bitset<SIZE> bitRotateRight(std::bitset<SIZE> input, int rotate_by);
+typedef std::bitset<SIZE> BoardType;
 
-std::bitset<SIZE> rotate90(std::bitset<SIZE> board);
-std::bitset<SIZE> rotate180(std::bitset<SIZE> board);
-std::bitset<SIZE> rotate270(std::bitset<SIZE> board);
+class Transform{
+    public:
+        struct QueryResult{
+            BoardType move;
+            std::function<BoardType(BoardType)> transformation_ptr;
+        };
 
-std::bitset<SIZE> reflectVertical(std::bitset<SIZE> board);
-std::bitset<SIZE> reflectHorizontal(std::bitset<SIZE> board);
+        QueryResult makeMove(BoardType);
 
-std::bitset<SIZE> reflectForwardSlash(std::bitset<SIZE> board);
-std::bitset<SIZE> reflectBackSlash(std::bitset<SIZE> board);
+    private: 
+
+        BoardType bitRotateRight(BoardType input, int rotate_by);
+
+        BoardType rotate90(BoardType board);
+        BoardType rotate180(BoardType board);
+        BoardType rotate270(BoardType board);
+        BoardType reflectVertical(BoardType board);
+        BoardType reflectHorizontal(BoardType board);
+        BoardType reflectForwardSlash(BoardType board);
+        BoardType reflectBackSlash(BoardType board);
+
+        BoardType invertRotate90(BoardType board);
+        BoardType invertRotate180(BoardType board);
+        BoardType invertRotate270(BoardType board);
+        BoardType invertReflectVertical(BoardType board);
+        BoardType invertReflectHorizontal(BoardType board);
+        BoardType invertReflectForwardSlash(BoardType board);
+        BoardType invertReflectBackSlash(BoardType board);
+
+};
 
 #endif
