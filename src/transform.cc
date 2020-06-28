@@ -154,11 +154,31 @@ BoardType Transform::invertRotate270(BoardType board){
 // Function that takes the game board and applies a suitable transformation to it to call the hash table
 // Returns a struct containing transformation applied, and the move chosen
 // @param: board: game board
-Transform::QueryResult Transform::makeMove(BoardType board){
+Transform::QueryResult Transform::makeMove(BoardType noughts, BoardType crosses){
 
     QueryResult query_result = QueryResult();
-
     
+    unsigned long minimum_id = 0;
+    unsigned long current_id; 
+    BoardType current_board;
+
+    for(int i = 0; i < TRAN_TOTAL; ++i){
+        current_id = 0;
+        current_board.reset();
+
+        current_board = (this->*(transformation_map[i]))(noughts);
+        current_id += current_board.to_ulong();
+        current_id << SIZE;
+
+        current_board = (this->*(transformation_map[i]))(crosses);
+        current_id += current_board.to_ulong();
+        
+        if(current_id < minimum_id){
+            query_result.transformation = (eTransformation)i;
+        }
+
+    }
+
 
     return query_result;
 }
@@ -166,8 +186,9 @@ Transform::QueryResult Transform::makeMove(BoardType board){
 // Temporary main function
 int main(){   
     // Sample board
-    BoardType board("011100001");
+    BoardType noughts("011100001");
+    BoardType crosses("100000100");
     Transform t = Transform();
-    t.makeMove(board);
+    t.makeMove(noughts, crosses);
     return 0;
 }
