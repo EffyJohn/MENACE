@@ -151,22 +151,6 @@ BoardType Transform::invertRotate270(BoardType board){
     return rotate90(board);
 }
 
-// Function that takes the hash for the board and retrives move from hash table
-// @param: hash: hash for the hashtable
-BoardType Transform::getMove(u_int32_t hash, eTransformation transformation){
-    // TODO: IMPLEMENT
-    BoardType move(0);
-
-    // no transformation
-    if (transformation == kNoTransformation)
-        return move;
-
-    else{
-        move = (this->*(inverse_transformation_map[transformation]))(move);
-        return move;
-    }
-}
-
 // Function that applies a suitable transformation to the game state to call the hash table
 // Returns a struct containing transformation applied, and the move chosen
 // @param: noughts: game board for noughts
@@ -175,10 +159,11 @@ Transform::QueryResult Transform::makeMove(BoardType noughts, BoardType crosses)
 
     QueryResult query_result = QueryResult();   // return packet
     
-    uint32_t minimum_id = -1;               // minimum id of all resulting boards
-    uint32_t current_id = 0;                // current id of board
+    BoardKeyType minimum_id = -1;               // minimum id of all resulting boards
+    BoardKeyType current_id = 0;                // current id of board
     BoardType current_board(0);             // board for iteration purposes
 
+    // checking original state board
     // shift 9 bits for creation of ID w/o transformation
     current_board = noughts;
     current_id += current_board.to_ulong();
@@ -194,6 +179,7 @@ Transform::QueryResult Transform::makeMove(BoardType noughts, BoardType crosses)
         query_result.transformation = (eTransformation)(-1);
     }
 
+    // apply transformations to bring to standard state
     for (int i = 0; i < TRAN_TOTAL; ++i){
         current_id = 0;
         current_board.reset();
@@ -214,7 +200,8 @@ Transform::QueryResult Transform::makeMove(BoardType noughts, BoardType crosses)
     }
 
     // query hash table to get move
-    query_result.move = getMove(minimum_id, query_result.transformation);    
+    // TODO: IMPLEMENT
+    // query_result.move = getMove(minimum_id, query_result.transformation);    
     return query_result;
 }
 
@@ -224,7 +211,10 @@ int main(){
     // Sample board
     BoardType noughts("011100001");
     BoardType crosses("100000100");
-    Transform t = Transform();
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    Data d = Data(&gen);
+    Transform t = Transform(&d);
     t.makeMove(noughts, crosses);
     return 0;
 }

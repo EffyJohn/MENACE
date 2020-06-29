@@ -6,18 +6,17 @@
 #include <iostream>
 #include <math.h>
 #include <stdint.h>
+#include "param.h"
+#include "data.h"
 
-// TODO: Move #defines and typdef to appropriate class
-#define SIZE 9          // Size of game board 
-#define TRAN_TOTAL 7    // Total nuber of transformations
-
-typedef std::bitset<SIZE> BoardType;    // Datatype representing board
 
 // Tranform class, handles all interaction between game and hash table
 class Transform{
     public:
-        Transform(){
-        
+        Transform(Data *database_ptr){
+            // Initialise internal reference to database
+            this->database_ptr = database_ptr; 
+            
             // Initialise the transformation map w/ transformation function pointers
             transformation_map[kRotate90] = &Transform::rotate90;
             transformation_map[kRotate180] = &Transform::rotate180;
@@ -63,7 +62,7 @@ class Transform{
 
 
     private: 
-        
+        Data *database_ptr;
         // Datatype encapsulating a pointer to member function
         typedef BoardType (Transform::*transformation_ptr)( BoardType);
 
@@ -88,7 +87,6 @@ class Transform{
         BoardType invertReflectBackSlash(BoardType board);
         BoardType invertReflectForwardSlash(BoardType board);
 
-        BoardType getMove(u_int32_t hash, eTransformation transformation);
 
 };
 
