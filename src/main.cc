@@ -10,8 +10,9 @@ int main(){
     std::random_device rd;
     std::mt19937 gen(rd());
     Data d = Data(&gen);
+    d.readDatabase();
     Transform t = Transform(&d);
     Transform::QueryResult q = t.makeMove(noughts, crosses);
-    std::cout << q.move << std::endl;
+    d.saveDatabase();
     return 0;
 }

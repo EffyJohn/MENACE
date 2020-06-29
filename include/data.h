@@ -3,6 +3,7 @@
 
 
 #include <unordered_map>
+#include <fstream>
 #include <math.h>
 #include <random>
 #include <iostream>
@@ -20,6 +21,8 @@ class Data{
 
         BoardType getMove(BoardKeyType key);
         void updateEntry(BoardKeyType key);         // TODO: Implement
+        void saveDatabase();
+        void readDatabase();
 
     private:
 

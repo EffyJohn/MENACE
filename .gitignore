@@ -1,6 +1,10 @@
 # Editor files
 .vscode/
 
+# Database files
+./data/*
+!./data/.gitkeep
+
 # Prerequisites
 *.d
 
