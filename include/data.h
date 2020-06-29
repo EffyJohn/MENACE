@@ -5,6 +5,7 @@
 #include <unordered_map>
 #include <math.h>
 #include <random>
+#include <iostream>
 #include "param.h"
 
 typedef std::vector<uint32_t> MatchBoxType;

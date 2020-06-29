@@ -12,6 +12,5 @@ int main(){
     Data d = Data(&gen);
     Transform t = Transform(&d);
     Transform::QueryResult q = t.makeMove(noughts, crosses);
-    std::cout << q.transformation << std::endl;
     return 0;
 }
