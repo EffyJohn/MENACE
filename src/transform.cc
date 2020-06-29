@@ -198,7 +198,7 @@ Transform::QueryResult Transform::makeMove(BoardType noughts, BoardType crosses)
             query_result.transformation = (eTransformation)i;
         }
     }
-
+    
     // query hash table to get move
     query_result.move = this->database_ptr->getMove(minimum_id);
     return query_result;

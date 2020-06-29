@@ -11,7 +11,6 @@ BoardType Data::choosePlace(DatabaseType::iterator data_iter){
     // returns index ie- 0 to 8
     uint32_t place = dist(*(this->gen));
 
-    
     BoardType move("100000000");
     return (move >> place);
 }
@@ -26,13 +25,13 @@ DatabaseType::iterator Data::createEntry(BoardKeyType key){
     // Calculate vacant positions available
     // TODO: Eliminate symmetry cases
     BoardType occupied = key;          // Stores lower 9 bits into occupied
-    occupied &= (key/pow(2, SIZE));    // Bitwise ands next 9 bits from key into occupied
+    occupied |= (key/pow(2, SIZE));    // Bitwise or of next 9 bits from key into occupied
 
     // If bit not set, add beads for that position
-    for(int i = 0; i < SIZE; ++i){
+    for (int i = 0; i < SIZE; ++i){
         if (!occupied[i])
-            data_entry[SIZE - 1 - i] = 5;   // Bitset indexes R to L
             // TODO: Number of initial beads
+            data_entry[SIZE - 1 - i] = 5;   // Bitset indexes R to L
     }
 
     std::pair<DatabaseType::iterator, bool> stored = database.insert(make_pair(key, data_entry));
@@ -51,6 +50,16 @@ BoardType Data::getMove(BoardKeyType key){
     if (data_iter == database.end())
         data_iter = createEntry(key);
     
-    return choosePlace(data_iter);
+    BoardType move;
 
+    // create board with all occupied places as 1's
+    BoardType occupied = key;
+    occupied |= (key/pow(2,SIZE));
+
+    // keep calling for moves until valid move is obtained
+    do{
+        move = choosePlace(data_iter);
+    } while((move&occupied).any());
+    
+    return move;
 }
