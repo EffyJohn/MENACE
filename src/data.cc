@@ -112,3 +112,30 @@ void Data::readDatabase(){
     }
     tf_stream.close();
 }
+
+// Function that updates the number of beads for the game
+// @param: key: key for database entry
+// @param: move: move that was made (db layout)
+// @param: result: result of game
+// !HARDCODED BEAD CHANGES
+void Data::updateEntry(BoardKeyType key, BoardType move, eWinCondition result){
+    
+    // Calculate change in beads
+    int32_t change = 0;
+    if (result == klose)
+        change = -1;
+    else if (result == kdraw)
+        change = 1;
+    else
+        change = 3;
+
+    // Calculate integer representation of move played
+    u_int32_t position_index = log2(move.to_ulong());
+    position_index = SIZE - 1 - position_index;         // Convert indexing to L to R
+    
+    // Update number of beads in the matchbox
+    DatabaseType::iterator database_iter = database.find(key);
+    std::cout << position_index << std::endl;
+    (database_iter->second)[position_index] += change;
+
+}

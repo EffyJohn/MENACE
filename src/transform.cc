@@ -196,6 +196,7 @@ Transform::QueryResult Transform::makeMove(BoardType noughts, BoardType crosses)
         if (current_id < minimum_id){
             minimum_id = current_id;
             query_result.transformation = (eTransformation)i;
+            query_result.key = current_id;
         }
     }
     
@@ -205,4 +206,24 @@ Transform::QueryResult Transform::makeMove(BoardType noughts, BoardType crosses)
     return query_result;
 }
 
+// Wrapper function for updating entry in database after game finish
+// @param: move: move that was played (in actual layout)
+// @param: transformation: transformation that was applied to move
+// @param: noughts: game board for noughts
+// @param: crosses: game board for crosses
+// @param: result: result of the game
+void Transform::updateEntry(BoardType move,eTransformation transformation, BoardType noughts, BoardType crosses, eWinCondition result){
+    
+    // generates move and board in database layout
+    BoardType move_db = (this->*(inverse_transformation_map[transformation]))(move);
+    BoardType noughts_db = (this->*(inverse_transformation_map[transformation]))(noughts);
+    BoardType crosses_db = (this->*(inverse_transformation_map[transformation]))(crosses);
 
+    // generate key for accessing database from noughts and crosses
+    BoardKeyType key = 0;
+    key += noughts_db.to_ulong();
+    key *= std::pow(2, SIZE);
+    key += crosses_db.to_ulong();
+    
+    this->database_ptr->updateEntry(key, move_db, result);
+}
