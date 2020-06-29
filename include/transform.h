@@ -55,10 +55,12 @@ class Transform{
         struct QueryResult{
             BoardType move;
             eTransformation transformation;
+            BoardKeyType key;
         };
 
         // Main callable function for transform class
         QueryResult makeMove(BoardType noughts, BoardType crosses);
+        void updateEntry(BoardType move, eTransformation transformation, BoardType noughts, BoardType crosses, eWinCondition result);
 
 
     private: 

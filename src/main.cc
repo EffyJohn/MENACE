@@ -13,6 +13,8 @@ int main(){
     d.readDatabase();
     Transform t = Transform(&d);
     Transform::QueryResult q = t.makeMove(noughts, crosses);
+    std::cout << q.move << std::endl;
+    t.updateEntry(q.move, q.transformation, noughts, crosses, kwin);
     d.saveDatabase();
     return 0;
 }

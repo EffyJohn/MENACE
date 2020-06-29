@@ -20,7 +20,7 @@ class Data{
         }
 
         BoardType getMove(BoardKeyType key);
-        void updateEntry(BoardKeyType key);         // TODO: Implement
+        void updateEntry(BoardKeyType key, BoardType move, eWinCondition result);         // TODO: Implement
         void saveDatabase();
         void readDatabase();
 
