@@ -200,8 +200,7 @@ Transform::QueryResult Transform::makeMove(BoardType noughts, BoardType crosses)
     }
 
     // query hash table to get move
-    // TODO: IMPLEMENT
-    // query_result.move = getMove(minimum_id, query_result.transformation);    
+    query_result.move = this->database_ptr->getMove(minimum_id);
     return query_result;
 }
 
@@ -215,6 +214,7 @@ int main(){
     std::mt19937 gen(rd());
     Data d = Data(&gen);
     Transform t = Transform(&d);
-    t.makeMove(noughts, crosses);
+    Transform::QueryResult q = t.makeMove(noughts, crosses);
+    std::cout << q.transformation << std::endl;
     return 0;
 }
