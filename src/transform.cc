@@ -201,6 +201,7 @@ Transform::QueryResult Transform::makeMove(BoardType noughts, BoardType crosses)
     
     // query hash table to get move
     query_result.move = this->database_ptr->getMove(minimum_id);
+    query_result.move = (this->*(inverse_transformation_map[query_result.transformation]))(query_result.move);
     return query_result;
 }
 
