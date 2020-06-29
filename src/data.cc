@@ -63,3 +63,52 @@ BoardType Data::getMove(BoardKeyType key){
     
     return move;
 }
+
+// Function that stores the database to a file
+// !SPECIFY FILE
+void Data::saveDatabase(){
+    
+    // Open filestream
+    std::ofstream tf_stream("./data/database.txt");
+
+    // First line is number of database entries
+    tf_stream << this->database.size() << std::endl;
+   
+    DatabaseType::iterator iter;    // iterator for database
+
+    for(iter = this->database.begin(); iter != this->database.end(); ++iter){
+        tf_stream << iter->first << std::endl;              // Store key
+        for(int i = 0; i < SIZE; ++i){
+            tf_stream << (iter->second)[i] << std::endl;    // Store number of beads
+        }
+    }
+
+    tf_stream.close();
+}
+
+// Function that reads the database from a file
+// !SPECIFY FILE
+void Data::readDatabase(){
+
+    // Open filestream
+    std::ifstream tf_stream("./data/database.txt");
+
+    int no_entries = 0;
+    BoardKeyType key;
+    MatchBoxType match_box;
+    uint32_t no_beads;
+    
+    tf_stream >> no_entries;                // Number of entries in database
+
+    for(int i = 0; i < no_entries; ++i){
+        match_box.clear();
+        tf_stream >> key;                   // Key for entry
+        for(int j = 0; j < SIZE; ++j){
+            tf_stream >> no_beads;          // Store number of beads
+            match_box.push_back(no_beads);
+        }
+ 
+        this->database.insert(make_pair(key, match_box));
+    }
+    tf_stream.close();
+}
