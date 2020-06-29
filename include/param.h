@@ -11,4 +11,11 @@
 typedef std::bitset<SIZE> BoardType;    // Datatype representing board
 typedef uint32_t BoardKeyType;          // Datatype representing board key
 
+// Enum encapsulating the result of the game
+enum eWinCondition{
+    klose = 0,
+    kdraw = 1,
+    kwin = 2
+};
+
 #endif
