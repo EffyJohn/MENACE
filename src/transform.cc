@@ -176,7 +176,7 @@ Transform::QueryResult Transform::makeMove(BoardType noughts, BoardType crosses)
     
     if (current_id < minimum_id){
         minimum_id = current_id;
-        query_result.transformation = (eTransformation)(-1);
+        query_result.transformation = static_cast<eTransformation>(-1);
     }
 
     // apply transformations to bring to standard state
@@ -195,7 +195,7 @@ Transform::QueryResult Transform::makeMove(BoardType noughts, BoardType crosses)
         
         if (current_id < minimum_id){
             minimum_id = current_id;
-            query_result.transformation = (eTransformation)i;
+            query_result.transformation = static_cast<eTransformation>(i);
         }
     }
     

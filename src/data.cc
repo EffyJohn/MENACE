@@ -135,7 +135,6 @@ void Data::updateEntry(BoardKeyType key, BoardType move, eWinCondition result){
     
     // Update number of beads in the matchbox
     DatabaseType::iterator database_iter = database.find(key);
-    std::cout << position_index << std::endl;
     (database_iter->second)[position_index] += change;
 
 }
