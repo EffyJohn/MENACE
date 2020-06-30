@@ -55,7 +55,6 @@ class Transform{
         struct QueryResult{
             BoardType move;
             eTransformation transformation;
-            BoardKeyType key;
         };
 
         // Main callable function for transform class

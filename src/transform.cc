@@ -196,7 +196,6 @@ Transform::QueryResult Transform::makeMove(BoardType noughts, BoardType crosses)
         if (current_id < minimum_id){
             minimum_id = current_id;
             query_result.transformation = (eTransformation)i;
-            query_result.key = current_id;
         }
     }
     
