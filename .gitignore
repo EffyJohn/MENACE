@@ -2,7 +2,7 @@
 .vscode/
 
 # Database files
-./data/*
+data/*
 !./data/.gitkeep
 
 # Prerequisites

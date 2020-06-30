@@ -3,8 +3,8 @@
 // Custom implementation of bit rotate right
 // @param: input: bitset to rotate
 // @param: rotate_by: number of places to rotate by
-BoardType Transform::bitRotateRight(BoardType input, int rotate_by){
-    return (input >> rotate_by | input << (SIZE - rotate_by));
+BoardType Transform::bitRotateRight(BoardType input, uint32_t rotate_by){
+    return (input >> rotate_by | input << (kSize - rotate_by));
 }
 
 // Function that takes a board and returns a board that is rotated by 90 degrees ccw
@@ -16,9 +16,9 @@ BoardType Transform::rotate90(BoardType board){
     BoardType mask(0);
    
     // Encoder[i] = number of places to bitrotate i'th place on board
-    int encoder[SIZE] = {2, 4, 6, 7, 0, 2, 3, 5, 7};
+    uint32_t encoder[kSize] = {2, 4, 6, 7, 0, 2, 3, 5, 7};
 
-    for (int i = 0; i < SIZE; ++i){
+    for (u_int32_t i = 0; i < kSize; ++i){
         // Mask to obtain i'th place on board
         mask.reset();
         mask.set(i);
@@ -27,7 +27,7 @@ BoardType Transform::rotate90(BoardType board){
         current = board&mask;
 
         // ! Board representation is 123456789, but bitset uses 987654231
-        current = bitRotateRight(current, encoder[SIZE - i - 1]);
+        current = bitRotateRight(current, encoder[kSize - i - 1]);
         rotated_board |= current;
     }
     return rotated_board;
@@ -42,9 +42,9 @@ BoardType Transform::reflectVertical(BoardType board){
     BoardType mask(0);
    
     // Encoder[i] = number of places to bitrotate i'th place on board
-    int encoder[SIZE] = {2, 0, 7, 2, 0, 7, 2, 0, 7};
+    u_int32_t encoder[kSize] = {2, 0, 7, 2, 0, 7, 2, 0, 7};
 
-    for (int i = 0; i < SIZE; ++i){
+    for (uint32_t i = 0; i < kSize; ++i){
         // Mask to obtain i'th place on board
         mask.reset();
         mask.set(i);
@@ -53,7 +53,7 @@ BoardType Transform::reflectVertical(BoardType board){
         current = board&mask;
 
         // ! Board representation is 123456789, but bitset uses 987654231
-        current = bitRotateRight(current, encoder[SIZE - i - 1]);
+        current = bitRotateRight(current, encoder[kSize - i - 1]);
         reflected_board |= current;
     }
     return reflected_board;
@@ -68,9 +68,9 @@ BoardType Transform::reflectBackSlash(BoardType board){
     BoardType mask(0);
    
     // Encoder[i] = number of places to bitrotate i'th place on board
-    int encoder[SIZE] = {8, 4, 0, 4, 0, 5, 0, 5, 1};
+    uint32_t encoder[kSize] = {8, 4, 0, 4, 0, 5, 0, 5, 1};
 
-    for (int i = 0; i < SIZE; ++i){
+    for (uint32_t i = 0; i < kSize; ++i){
         // Mask to obtain i'th place on board
         mask.reset();
         mask.set(i);
@@ -79,7 +79,7 @@ BoardType Transform::reflectBackSlash(BoardType board){
         current = board&mask;
 
         // ! Board representation is 123456789, but bitset uses 987654231
-        current = bitRotateRight(current, encoder[SIZE - i - 1]);
+        current = bitRotateRight(current, encoder[kSize - i - 1]);
         reflected_board |= current;
     }
     return reflected_board;
@@ -158,8 +158,7 @@ BoardType Transform::invertRotate270(BoardType board){
 Transform::QueryResult Transform::makeMove(BoardType noughts, BoardType crosses){
 
     QueryResult query_result = QueryResult();   // return packet
-    
-    BoardKeyType minimum_id = -1;               // minimum id of all resulting boards
+    BoardKeyType minimum_id = std::numeric_limits<BoardKeyType>::max();         // minimum id of all resulting boards
     BoardKeyType current_id = 0;                // current id of board
     BoardType current_board(0);             // board for iteration purposes
 
@@ -167,7 +166,7 @@ Transform::QueryResult Transform::makeMove(BoardType noughts, BoardType crosses)
     // shift 9 bits for creation of ID w/o transformation
     current_board = noughts;
     current_id += current_board.to_ulong();
-    current_id *= std::pow(2, SIZE);
+    current_id *= std::pow(2, kSize);
     
 
     // create ID w/o transformation
@@ -176,18 +175,18 @@ Transform::QueryResult Transform::makeMove(BoardType noughts, BoardType crosses)
     
     if (current_id < minimum_id){
         minimum_id = current_id;
-        query_result.transformation = (eTransformation)(-1);
+        query_result.transformation = kNoTransformation;
     }
 
     // apply transformations to bring to standard state
-    for (int i = 0; i < TRAN_TOTAL; ++i){
+    for (uint32_t i = 0; i < kTranTotal; ++i){
         current_id = 0;
         current_board.reset();
 
         // apply transformation to noughts and shift 9 bits for creation of ID
         current_board = (this->*(transformation_map[i]))(noughts);
         current_id += current_board.to_ulong();
-        current_id *= std::pow(2, SIZE);
+        current_id *= std::pow(2, kSize);
     
         // apply transformation to crosses and create ID
         current_board = (this->*(transformation_map[i]))(crosses);
@@ -195,8 +194,7 @@ Transform::QueryResult Transform::makeMove(BoardType noughts, BoardType crosses)
         
         if (current_id < minimum_id){
             minimum_id = current_id;
-            query_result.transformation = (eTransformation)i;
-            query_result.key = current_id;
+            query_result.transformation = static_cast<eTransformation>(i);
         }
     }
     
@@ -222,7 +220,7 @@ void Transform::updateEntry(BoardType move,eTransformation transformation, Board
     // generate key for accessing database from noughts and crosses
     BoardKeyType key = 0;
     key += noughts_db.to_ulong();
-    key *= std::pow(2, SIZE);
+    key *= std::pow(2, kSize);
     key += crosses_db.to_ulong();
     
     this->database_ptr->updateEntry(key, move_db, result);

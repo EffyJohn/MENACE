@@ -8,6 +8,7 @@
 #include <stdint.h>
 #include "param.h"
 #include "data.h"
+#include <limits>
 
 
 // Tranform class, handles all interaction between game and hash table
@@ -40,7 +41,6 @@ class Transform{
         // Game class would communicate with transform class using these id's
         // TODO: Move to appropriate class
         enum eTransformation {
-            kNoTransformation = -1,
             kRotate90 = 0,
             kRotate180 = 1,
             kRotate270 = 2,
@@ -48,6 +48,7 @@ class Transform{
             kReflectVertical = 4,
             kReflectBackSlash = 5,
             kReflectForwardSlash = 6,
+            kNoTransformation = 7,
         };
 
         // Structure encapsulating the 'packet' that would be sent between game and transform class
@@ -55,7 +56,6 @@ class Transform{
         struct QueryResult{
             BoardType move;
             eTransformation transformation;
-            BoardKeyType key;
         };
 
         // Main callable function for transform class
@@ -68,10 +68,10 @@ class Transform{
         // Datatype encapsulating a pointer to member function
         typedef BoardType (Transform::*transformation_ptr)( BoardType);
 
-        transformation_ptr transformation_map[TRAN_TOTAL];
-        transformation_ptr inverse_transformation_map[TRAN_TOTAL];
+        transformation_ptr transformation_map[kTranTotal];
+        transformation_ptr inverse_transformation_map[kTranTotal];
 
-        BoardType bitRotateRight(BoardType input, int rotate_by);
+        BoardType bitRotateRight(BoardType input, uint32_t rotate_by);
 
         BoardType rotate90(BoardType board);
         BoardType rotate180(BoardType board);
