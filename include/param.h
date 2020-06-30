@@ -5,10 +5,10 @@
 #include <random>
 #include <vector>
 
-#define SIZE 9          // Size of game board 
-#define TRAN_TOTAL 7    // Total nuber of transformations
+const uint32_t kSize = 9;                // Size of game board
+const uint32_t kTranTotal = 7;          // Total nuber of transformations
 
-typedef std::bitset<SIZE> BoardType;    // Datatype representing board
+typedef std::bitset<kSize> BoardType;    // Datatype representing board
 typedef uint32_t BoardKeyType;          // Datatype representing board key
 
 // Enum encapsulating the result of the game

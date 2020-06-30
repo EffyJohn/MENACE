@@ -67,10 +67,10 @@ class Transform{
         // Datatype encapsulating a pointer to member function
         typedef BoardType (Transform::*transformation_ptr)( BoardType);
 
-        transformation_ptr transformation_map[TRAN_TOTAL];
-        transformation_ptr inverse_transformation_map[TRAN_TOTAL];
+        transformation_ptr transformation_map[kTranTotal];
+        transformation_ptr inverse_transformation_map[kTranTotal];
 
-        BoardType bitRotateRight(BoardType input, int rotate_by);
+        BoardType bitRotateRight(BoardType input, uint32_t rotate_by);
 
         BoardType rotate90(BoardType board);
         BoardType rotate180(BoardType board);

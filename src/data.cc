@@ -20,18 +20,18 @@ BoardType Data::choosePlace(DatabaseType::iterator data_iter){
 DatabaseType::iterator Data::createEntry(BoardKeyType key){
  
     // Create entry with all 0's
-    MatchBoxType data_entry(SIZE, 0);
+    MatchBoxType data_entry(kSize, 0);
 
     // Calculate vacant positions available
     // TODO: Eliminate symmetry cases
     BoardType occupied = key;          // Stores lower 9 bits into occupied
-    occupied |= (key/pow(2, SIZE));    // Bitwise or of next 9 bits from key into occupied
+    occupied |= (key/pow(2, kSize));    // Bitwise or of next 9 bits from key into occupied
 
     // If bit not set, add beads for that position
-    for (int i = 0; i < SIZE; ++i){
+    for (uint32_t i = 0; i < kSize; ++i){
         if (!occupied[i])
             // TODO: Number of initial beads
-            data_entry[SIZE - 1 - i] = 5;   // Bitset indexes R to L
+            data_entry[kSize - 1 - i] = 5;   // Bitset indexes R to L
     }
 
     std::pair<DatabaseType::iterator, bool> stored = database.insert(make_pair(key, data_entry));
@@ -54,7 +54,7 @@ BoardType Data::getMove(BoardKeyType key){
 
     // create board with all occupied places as 1's
     BoardType occupied = key;
-    occupied |= (key/pow(2,SIZE));
+    occupied |= (key/pow(2,kSize));
 
     // keep calling for moves until valid move is obtained
     do{
@@ -78,7 +78,7 @@ void Data::saveDatabase(){
 
     for(iter = this->database.begin(); iter != this->database.end(); ++iter){
         tf_stream << iter->first << std::endl;              // Store key
-        for(int i = 0; i < SIZE; ++i){
+        for(uint32_t i = 0; i < kSize; ++i){
             tf_stream << (iter->second)[i] << std::endl;    // Store number of beads
         }
     }
@@ -93,17 +93,17 @@ void Data::readDatabase(){
     // Open filestream
     std::ifstream tf_stream("./data/database.txt");
 
-    int no_entries = 0;
+    uint32_t no_entries = 0;
     BoardKeyType key;
     MatchBoxType match_box;
     uint32_t no_beads;
     
     tf_stream >> no_entries;                // Number of entries in database
 
-    for(int i = 0; i < no_entries; ++i){
+    for(uint32_t i = 0; i < no_entries; ++i){
         match_box.clear();
         tf_stream >> key;                   // Key for entry
-        for(int j = 0; j < SIZE; ++j){
+        for(u_int32_t j = 0; j < kSize; ++j){
             tf_stream >> no_beads;          // Store number of beads
             match_box.push_back(no_beads);
         }
@@ -131,7 +131,7 @@ void Data::updateEntry(BoardKeyType key, BoardType move, eWinCondition result){
 
     // Calculate integer representation of move played
     u_int32_t position_index = log2(move.to_ulong());
-    position_index = SIZE - 1 - position_index;         // Convert indexing to L to R
+    position_index = kSize - 1 - position_index;         // Convert indexing to L to R
     
     // Update number of beads in the matchbox
     DatabaseType::iterator database_iter = database.find(key);
