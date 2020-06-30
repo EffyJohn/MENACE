@@ -158,8 +158,7 @@ BoardType Transform::invertRotate270(BoardType board){
 Transform::QueryResult Transform::makeMove(BoardType noughts, BoardType crosses){
 
     QueryResult query_result = QueryResult();   // return packet
-    
-    BoardKeyType minimum_id = -1;               // minimum id of all resulting boards
+    BoardKeyType minimum_id = std::numeric_limits<BoardKeyType>::max();         // minimum id of all resulting boards
     BoardKeyType current_id = 0;                // current id of board
     BoardType current_board(0);             // board for iteration purposes
 
@@ -176,7 +175,7 @@ Transform::QueryResult Transform::makeMove(BoardType noughts, BoardType crosses)
     
     if (current_id < minimum_id){
         minimum_id = current_id;
-        query_result.transformation = static_cast<eTransformation>(-1);
+        query_result.transformation = kNoTransformation;
     }
 
     // apply transformations to bring to standard state
